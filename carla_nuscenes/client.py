@@ -36,7 +36,7 @@ class Client:
         self.trafficmanager.set_global_distance_to_leading_vehicle(1.0)
         self.trafficmanager.set_synchronous_mode(True) # 启用同步模式（与模拟器帧同步，确保数据一致性）
         self.trafficmanager.set_hybrid_physics_mode(True)
-        self.trafficmanager.set_hybrid_physics_radius(100)
+        self.trafficmanager.set_hybrid_physics_radius(200)
         self.trafficmanager.set_respawn_dormant_vehicles(True) # 自动重新激活静止车辆（避免道路空驶）
         self.trafficmanager.set_boundaries_respawn_dormant_vehicles(21, 70)
 
@@ -56,6 +56,7 @@ class Client:
         else:
             # 生成随机场景（参数随机，用于快速扩充数据集多样性）
             self.generate_random_scene(scene_config)
+            raise ValueError
         print("generate scene success!")
 
     def generate_custom_scene(self, scene_config):
@@ -80,6 +81,37 @@ class Client:
         self.ego_vehicle.blueprint.set_attribute('role_name', 'hero')  # 保留主车标记
         self.ego_vehicle.spawn_actor()  #  在 Carla 世界中生成主车实体
         self.ego_vehicle.get_actor().set_autopilot()  # 4. 启用主车自动驾驶
+
+        # --------------------------
+        # 辅助车辆生成 
+        # --------------------------
+        aux_config1 = scene_config["aux_vehicle1"]
+        self.aux_vehicle1 = Vehicle(world=self.world, **aux_config1)  
+        print("self.aux_vehicle1",self.aux_vehicle1)
+        self.aux_vehicle1.blueprint.set_attribute('role_name', 'hero1')  
+        self.aux_vehicle1.spawn_actor()  
+        self.aux_vehicle1.get_actor().set_autopilot()
+
+        aux_config2 = scene_config["aux_vehicle2"]
+        self.aux_vehicle2 = Vehicle(world=self.world, **aux_config2)  
+        print("self.aux_vehicle2",self.aux_vehicle2)
+        self.aux_vehicle2.blueprint.set_attribute('role_name', 'hero2')  
+        self.aux_vehicle2.spawn_actor()  
+        self.aux_vehicle2.get_actor().set_autopilot()    
+
+        aux_config3 = scene_config["aux_vehicle3"]
+        self.aux_vehicle3 = Vehicle(world=self.world, **aux_config3)  
+        print("self.aux_vehicle3",self.aux_vehicle3)
+        self.aux_vehicle3.blueprint.set_attribute('role_name', 'hero3')  
+        self.aux_vehicle3.spawn_actor()  
+        self.aux_vehicle3.get_actor().set_autopilot()  
+
+        aux_config4 = scene_config["aux_vehicle4"]
+        self.aux_vehicle4 = Vehicle(world=self.world, **aux_config4)  
+        print("self.aux_vehicle4",self.aux_vehicle4)
+        self.aux_vehicle4.blueprint.set_attribute('role_name', 'hero4')  
+        self.aux_vehicle4.spawn_actor()  
+        self.aux_vehicle4.get_actor().set_autopilot()  
 
         # --------------------------
         # 环境车辆生成（核心修改部分）
@@ -157,7 +189,7 @@ class Client:
                         vehicle.set_actor(actor_id)
                         self.vehicles.append(vehicle)
                         spawned_count += 1
-                        logging.info(f"成功生成车辆（{spawned_count}/{NUM_OF_VEHICLES}），ID: {actor_id}")
+                        logging.info(f"成功生成车辆（{spawned_count}/{NUM_OF_VEHICLES}）,ID: {actor_id}")
                         break  # 跳出重试循环
 
                     except Exception as e:
@@ -368,6 +400,48 @@ class Client:
             else:
                 print(response.error)
         self.sensors = list(filter(lambda sensor: sensor.get_actor(), self.sensors))
+
+        ## 辅助车辆的传感器
+        self.aux_sensors1 = [Sensor(world=self.world, attach_to=self.aux_vehicle1.get_actor(), **sensor_config) for
+                        sensor_config in scene_config["calibrated_sensors"]["sensors"]]
+        aux_sensors_batch1 = [SpawnActor(sensor.blueprint, sensor.transform, sensor.attach_to) for sensor in self.aux_sensors1]
+        for i, response in enumerate(self.client.apply_batch_sync(aux_sensors_batch1)):
+            if not response.error:
+                self.aux_sensors1[i].set_actor(response.actor_id)
+            else:
+                print(response.error)
+        self.aux_sensors1 = list(filter(lambda sensor: sensor.get_actor(), self.aux_sensors1))
+
+        self.aux_sensors2 = [Sensor(world=self.world, attach_to=self.aux_vehicle2.get_actor(), **sensor_config) for
+                        sensor_config in scene_config["calibrated_sensors"]["sensors"]]
+        aux_sensors_batch2 = [SpawnActor(sensor.blueprint, sensor.transform, sensor.attach_to) for sensor in self.aux_sensors2]
+        for i, response in enumerate(self.client.apply_batch_sync(aux_sensors_batch2)):
+            if not response.error:
+                self.aux_sensors2[i].set_actor(response.actor_id)
+            else:
+                print(response.error)
+        self.aux_sensors2 = list(filter(lambda sensor: sensor.get_actor(), self.aux_sensors2))
+
+        self.aux_sensors3 = [Sensor(world=self.world, attach_to=self.aux_vehicle3.get_actor(), **sensor_config) for
+                        sensor_config in scene_config["calibrated_sensors"]["sensors"]]
+        aux_sensors_batch3 = [SpawnActor(sensor.blueprint, sensor.transform, sensor.attach_to) for sensor in self.aux_sensors3]
+        for i, response in enumerate(self.client.apply_batch_sync(aux_sensors_batch3)):
+            if not response.error:
+                self.aux_sensors3[i].set_actor(response.actor_id)
+            else:
+                print(response.error)
+        self.aux_sensors3 = list(filter(lambda sensor: sensor.get_actor(), self.aux_sensors3))
+
+        self.aux_sensors4 = [Sensor(world=self.world, attach_to=self.aux_vehicle4.get_actor(), **sensor_config) for
+                        sensor_config in scene_config["calibrated_sensors"]["sensors"]]
+        aux_sensors_batch4 = [SpawnActor(sensor.blueprint, sensor.transform, sensor.attach_to) for sensor in self.aux_sensors4]
+        for i, response in enumerate(self.client.apply_batch_sync(aux_sensors_batch4)):
+            if not response.error:
+                self.aux_sensors4[i].set_actor(response.actor_id)
+            else:
+                print(response.error)
+        self.aux_sensors4 = list(filter(lambda sensor: sensor.get_actor(), self.aux_sensors4))
+        
 
     # def generate_custom_scene(self,scene_config):
     #

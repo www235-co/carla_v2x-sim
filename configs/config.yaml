@@ -69,6 +69,72 @@ worlds:  #map
                 - x: -48.642700
                   y: -19.353889
                   z: 0.600000
+            
+            # AUX vehicle
+            aux_vehicle1:
+              bp_name: "vehicle.audi.tt"
+              location:
+                x: -55.000000
+                y: -75.000000
+                z: 0.600000
+              rotation: 
+                yaw: 90.432304
+                pitch: 0.0
+                roll: 0.0
+              options: ~
+              path: 
+                - x: -48.642700
+                  y: -19.353889
+                  z: 0.600000
+
+            aux_vehicle2:
+              bp_name: "vehicle.bmw.grandtourer"
+              location:
+                x: -110.000000
+                y: -6.500000
+                z: 0.600000
+              rotation: 
+                yaw: 90.432304
+                pitch: 0.0
+                roll: 0.0
+              options: ~
+              path: 
+                - x: -48.642700
+                  y: -19.353889
+                  z: 0.600000
+
+            aux_vehicle3:
+              bp_name: "vehicle.jeep.wrangler_rubicon"
+              location:
+                x: -45.000000
+                y: 75.000000
+                z: 0.600000
+              rotation: 
+                yaw: 90.432304
+                pitch: 0.0
+                roll: 0.0
+              options: ~
+              path: 
+                - x: -48.642700
+                  y: -19.353889
+                  z: 0.600000
+
+            aux_vehicle4:
+              bp_name: "vehicle.dodge.charger_2020"
+              location:
+                x: 15.000000
+                y: -5.000000
+                z: 0.600000
+              rotation: 
+                yaw: 90.432304
+                pitch: 0.0
+                roll: 0.0
+              options: ~
+              path: 
+                - x: -48.642700
+                  y: -19.353889
+                  z: 0.600000
+
             vehicles:
               !include ./configs/vehicles.yaml  # 其他车辆配置（数量、类型、轨迹等）
             walkers:

@@ -10,4 +10,4 @@ runner = Generator(config)
 if os.path.exists(config["dataset"]["root"]):
     runner.generate_dataset(True)
 else:
-    runner.generate_dataset(False)
+    runner.generate_dataset(False) 
